@@ -1,3 +1,11 @@
+# WTF Keyboard: Hide What You Type
+
+This keyboard is meant for sending sneaky texts to friends when other ones/parents are watching over :P It allows users to enter an encyptor number and dynamical encode the letters being typed so they cant be seen by anyone else. You can put negative values to decrypt messages sent to you! Go be sneaky!!
+
+
+
+
+
 # Homework 2: Custom Keyboard
 
 ## Due
