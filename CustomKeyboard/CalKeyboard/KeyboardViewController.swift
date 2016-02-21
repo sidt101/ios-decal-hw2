@@ -48,9 +48,13 @@ class KeyboardViewController: UIInputViewController {
     @IBOutlet var button8: UIButton!
     @IBOutlet var button9: UIButton!
     @IBOutlet var button0: UIButton!
+    @IBOutlet var encodeButton: UIButton!
+    @IBOutlet var decodeButton: UIButton!
     @IBOutlet var buttonSpacebar: UIButton!
     @IBOutlet var returnButton: UIButton!
-    @IBOutlet weak var encodeValue: UITextField!
+    
+    var encodeHighlighted:Bool = true
+    var currentEncodeValue = 0;
     
     
     var keyboardView: UIView!
@@ -60,10 +64,11 @@ class KeyboardViewController: UIInputViewController {
     
         // Add custom view sizing constraints here
     }
+    
+    override func viewWillAppear(animated: Bool) {
+    }
 
     override func viewDidLoad() {
-        debugPrint("hello");
-        print("hello");
         super.viewDidLoad()
         loadInterface()
     }
@@ -82,13 +87,102 @@ class KeyboardViewController: UIInputViewController {
     }
     
     func inputLetter(sender:UIButton!) {
-        if ((encodeValue?.text) != nil) {
-            let encodeNumber = Int(encodeValue.text!);
-            let s = sender.titleLabel!.text!.unicodeScalars;
-            let constChar = Character(UnicodeScalar(Int(s[s.startIndex].value) + encodeNumber!));
+        if (encodeHighlighted) {
+            currentEncodeValue = abs(currentEncodeValue)
+        } else {
+            currentEncodeValue = -abs(currentEncodeValue)
+        }
+        
+        if let text = sender.titleLabel!.text {
+            let x = Int(text.unicodeScalars[text.unicodeScalars.startIndex].value) + currentEncodeValue
+            (textDocumentProxy as UIKeyInput).insertText(String(UnicodeScalar(x)))
+        }
+    }
+    
+    func deleteBackward(sender:UIButton!) {
+        (textDocumentProxy as UIKeyInput).deleteBackward()
+    }
+    
+    func addANewLine(sender:UIButton!) {
+        (textDocumentProxy as UIKeyInput).insertText("\r\n")
+    }
+    
+    func addASpace(sender:UIButton!) {
+        (textDocumentProxy as UIKeyInput).insertText(" ")
+    }
+    
+    func chooseEncodeDecodeValue(sender:UIButton!) {
+        if (Int(sender.titleLabel!.text!)! != currentEncodeValue) {
+            button0.selected = false
+            button1.selected = false
+            button2.selected = false
+            button3.selected = false
+            button4.selected = false
+            button5.selected = false
+            button6.selected = false
+            button7.selected = false
+            button8.selected = false
+            button9.selected = false
+
+            switch sender.titleLabel!.text! {
+                case "0":
+                    button0.selected = true
+                    currentEncodeValue = 0
+                    break
+                case "1":
+                    button1.selected = true
+                    currentEncodeValue = 1
+                    break
+                case "2":
+                    button2.selected = true
+                    currentEncodeValue = 2
+                    break
+                case "3":
+                    button3.selected = true
+                    currentEncodeValue = 3
+                    break
+                case "4":
+                    button4.selected = true
+                    currentEncodeValue = 4
+                    break
+                case "5":
+                    button5.selected = true
+                    currentEncodeValue = 5
+                    break
+                case "6":
+                    button6.selected = true
+                    currentEncodeValue = 6
+                    break
+                case "7":
+                    button7.selected = true
+                    currentEncodeValue = 7
+                    break
+                case "8":
+                    button8.selected = true
+                    currentEncodeValue = 8
+                    break
+                case "9":
+                    button9.selected = true
+                    currentEncodeValue = 9
+                    break
+                default:
+                    print("It wont reach here")
+            }
             
-            
-            
+        }
+        
+    }
+    
+    func switchBetweenEncodeAndDecode(sender:UIButton!) {
+        if sender.titleLabel!.text == "Encode" {
+            encodeHighlighted = true;
+            encodeButton.selected = true;
+            decodeButton.selected = false;
+    
+        } else {
+            encodeHighlighted = false;
+            encodeButton.selected = false;
+            decodeButton.selected = true;
         }
     }
 
@@ -99,8 +193,11 @@ class KeyboardViewController: UIInputViewController {
         view.addSubview(keyboardView)
         view.backgroundColor = keyboardView.backgroundColor
         nextKeyboardButton.addTarget(self, action: "advanceToNextInputMode", forControlEvents: .TouchUpInside) // advanceToNextInputMode is already defined in template
-        nextKeyboardButton.addTarget(self, action: "advanceToNextInputMode", forControlEvents: .TouchUpInside) // advanceToNextInputMode is already defined in template
-        print("hello");
+        
+        
+        encodeButton.selected = true;
+        button0.selected = true;
+        
         deleteButton.addTarget(self, action: "deleteBackward:", forControlEvents: .TouchUpInside)
         buttonA.addTarget(self, action: "inputLetter:", forControlEvents: .TouchUpInside)
         buttonB.addTarget(self, action: "inputLetter:", forControlEvents: .TouchUpInside)
@@ -128,8 +225,21 @@ class KeyboardViewController: UIInputViewController {
         buttonX.addTarget(self, action: "inputLetter:", forControlEvents: .TouchUpInside)
         buttonY.addTarget(self, action: "inputLetter:", forControlEvents: .TouchUpInside)
         buttonZ.addTarget(self, action: "inputLetter:", forControlEvents: .TouchUpInside)
-        buttonSpacebar.addTarget(self, action: "inputLetter:", forControlEvents: .TouchUpInside)
-
+        buttonSpacebar.addTarget(self, action: "addASpace:", forControlEvents: .TouchUpInside)
+        returnButton.addTarget(self, action: "addANewLine:", forControlEvents: .TouchUpInside)
+        encodeButton.addTarget(self, action: "switchBetweenEncodeAndDecode:", forControlEvents: .TouchUpInside)
+        decodeButton.addTarget(self, action: "switchBetweenEncodeAndDecode:", forControlEvents: .TouchUpInside)
+        button0.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button1.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button2.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button3.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button4.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button5.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button6.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button7.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button8.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        button9.addTarget(self, action: "chooseEncodeDecodeValue:", forControlEvents: .TouchUpInside)
+        
         
     }
 
